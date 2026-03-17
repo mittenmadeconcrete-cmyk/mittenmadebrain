@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Mitten Made Brain"/>
+<meta name="theme-color" content="#09090B"/>
+<title>Mitten Made Brain</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#09090B;--surface:#111113;--surface2:#161618;--border:#1E1E22;--text:#F0EDE8;--muted:#444;--dim:#2A2A2E;--accent:#F4A261;--accent2:#E8914D}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;height:100%;overscroll-behavior:none;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{display:none}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.screen{display:none;flex-direction:column;height:100vh;max-width:480px;margin:0 auto;animation:fadeIn .25s ease}
+.screen.active{display:flex}
+#home{overflow-y:auto;padding:0 0 32px}
+.home-header{padding:40px 20px 24px;text-align:center}
+.logo-lockup{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px}
+.logo-badge{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#F4A261,#E8914D);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 8px 24px #F4A26133}
+.logo-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:3px;color:var(--accent)}
+.tagline{font-size:10px;letter-spacing:4px;color:var(--dim);text-transform:uppercase;margin-bottom:22px}
+.hero-title{font-size:34px;font-weight:700;line-height:1.1;margin-bottom:8px;background:linear-gradient(160deg,#F0EDE8 40%,#3A3A3E);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:13px;color:#3E3E44;line-height:1.6}
+.section{padding:0 16px;margin-bottom:28px}
+.section-label{font-size:9px;letter-spacing:3.5px;color:var(--dim);text-transform:uppercase;margin-bottom:12px;padding-left:2px}
+.daily-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.daily-card{border-radius:16px;padding:16px;cursor:pointer;transition:transform .15s,opacity .15s;position:relative;overflow:hidden;border:1px solid transparent}
+.daily-card:active{transform:scale(.97);opacity:.85}
+.daily-card .dc-icon{font-size:26px;margin-bottom:10px;display:block}
+.daily-card .dc-title{font-size:14px;font-weight:700;margin-bottom:4px;color:#F0EDE8}
+.daily-card .dc-sub{font-size:11px;line-height:1.4;opacity:.6}
+.daily-card .dc-arrow{position:absolute;bottom:14px;right:14px;font-size:16px;opacity:.3}
+.tools-list{display:flex;flex-direction:column;gap:8px}
+.tool-row{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:all .15s}
+.tool-row:active{background:var(--surface2)}
+.tool-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.tool-info{flex:1}
+.tool-name{font-size:14px;font-weight:600;color:#E0DDD8;margin-bottom:2px}
+.tool-desc{font-size:12px;color:var(--muted)}
+.tool-arrow{color:var(--dim);font-size:14px}
+.chips{display:flex;overflow-x:auto;gap:8px;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:10px 16px;font-size:13px;color:#777;white-space:nowrap;cursor:pointer;font-family:inherit;flex-shrink:0}
+.chip:active{background:var(--surface2);color:var(--text);border-color:#333}
+#chat{background:var(--bg)}
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.chat-left{display:flex;align-items:center;gap:10px}
+.back-btn{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:8px 13px;color:#666;font-size:13px;cursor:pointer;font-family:inherit}
+.back-btn:active{background:var(--surface2)}
+.chat-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.chat-title{font-size:14px;font-weight:600;color:#E0DDD8}
+.chat-sub{font-size:10px;color:var(--dim)}
+.hdr-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:7px 12px;color:#555;font-size:12px;cursor:pointer;font-family:inherit}
+.hdr-btn:active{background:var(--surface2);color:#CCC}
+.messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;-webkit-overflow-scrolling:touch}
+.msg-ai{display:flex;align-items:flex-start;gap:9px;animation:fadeIn .3s ease}
+.msg-user{display:flex;justify-content:flex-end;animation:fadeIn .2s ease}
+.avatar{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:2px}
+.bubble-ai{background:var(--surface);border:1px solid var(--border);border-radius:3px 14px 14px 14px;padding:14px 16px;font-size:14px;line-height:1.75;white-space:pre-wrap;color:#CCC;max-width:88%;word-break:break-word}
+.bubble-user{background:var(--surface2);border-radius:14px 3px 14px 14px;padding:12px 15px;font-size:14px;line-height:1.6;color:#888;max-width:78%;word-break:break-word}
+.cursor{display:inline-block;width:2px;height:13px;background:var(--accent);margin-left:2px;vertical-align:middle;animation:blink .7s ease infinite}
+.input-area{padding:12px 16px 28px;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg)}
+.input-row{display:flex;gap:10px;align-items:flex-end}
+.msg-input{background:var(--surface);border:1px solid var(--border);border-radius:13px;padding:13px 15px;color:var(--text);font-size:15px;outline:none;flex:1;font-family:inherit;resize:none;line-height:1.5;-webkit-appearance:none;max-height:120px}
+.msg-input:focus{border-color:#2E2E33}
+.msg-input::placeholder{color:#333}
+.send-btn{background:var(--accent);color:var(--bg);border:none;border-radius:12px;width:44px;height:44px;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700}
+.send-btn:active{background:var(--accent2)}
+.send-btn:disabled{background:#1E1E22;color:#333}
+.suggestions{display:flex;overflow-x:auto;gap:8px;margin-top:10px;-webkit-overflow-scrolling:touch}
+.sug{background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:8px 14px;font-size:12px;color:#666;white-space:nowrap;cursor:pointer;font-family:inherit;flex-shrink:0}
+.sug:active{background:var(--surface2);color:var(--text)}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(10px);background:#1E1E22;border:1px solid #2A2A2E;border-radius:100px;padding:10px 20px;font-size:13px;color:#CCC;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="screen active" id="home">
+  <div class="home-header">
+    <div class="logo-lockup">
+      <div class="logo-badge">🪨</div>
+      <span class="logo-name">Mitten Made Brain</span>
+    </div>
+    <div class="tagline">Concrete Intelligence System</div>
+    <h1 class="hero-title">Built for<br/>how you work</h1>
+    <p class="hero-sub" style="max-width:280px;margin:0 auto">Your daily tools. Your voice. Your business.</p>
+  </div>
+  <div class="section">
+    <div class="section-label">Daily Drivers</div>
+    <div class="daily-grid" id="dailyGrid"></div>
+  </div>
+  <div class="section">
+    <div class="section-label">Quick Fire</div>
+    <div class="chips" id="chipsEl"></div>
+  </div>
+  <div class="section">
+    <div class="section-label">More Tools</div>
+    <div class="tools-list" id="toolsList"></div>
+  </div>
+</div>
+<div class="screen" id="chat">
+  <div class="chat-header">
+    <div class="chat-left">
+      <button class="back-btn" onclick="goHome()">← Back</button>
+      <div class="chat-icon" id="chatIcon"></div>
+      <div>
+        <div class="chat-title" id="chatTitle"></div>
+        <div class="chat-sub">Mitten Made Brain</div>
+      </div>
+    </div>
+    <button class="hdr-btn" id="copyBtn" onclick="copyLast()">Copy</button>
+  </div>
+  <div class="messages" id="messages"></div>
+  <div class="input-area">
+    <div class="input-row">
+      <textarea class="msg-input" id="msgInput" rows="1" placeholder="Type or ask a follow-up..." oninput="autoResize(this);updateSend()" onkeydown="handleKey(event)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="send()" disabled>↑</button>
+    </div>
+    <div class="suggestions" id="suggestions"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const SYSTEM=`You are the built-in AI brain for Mitten Made Concrete, a concrete contracting business in Michigan owned by Drew. ABOUT DREW: early 30s, male, ADHD, extremely hard working, career motivated. BUSINESS: Mitten Made Concrete. SPECIALTY: Concrete rip-out and replacement ONLY. Driveways, patios, porches, walkways, steps, sidewalks. Does NOT install brick or pavers. Limited repairs. Recent projects: backyard broom-finish patio, new front porch, large residential driveway, curved walkway, exterior steps and sidewalk. BRAND VOICE: Professional, confident, approachable. Solutions-focused. Honest and direct. Never sugar-coat. WRITING RULES: Never use dash symbols. Never sound like AI. Sound human. Be concise. Drew has ADHD so get to the point fast.`;
+const DAILY=[
+{id:"quote",icon:"📋",title:"Quote & Estimate",sub:"Build quotes and follow-ups fast",bg:"linear-gradient(135deg,#1A1208,#221508)",border:"#F4A26122",iconBg:"#F4A26118",prompt:"I need to build a quote or follow-up message for a concrete job. Ask me: what type of job, rough size if known, customer name, and what stage we are at.",suggestions:["Write a follow-up text","Price a driveway job","Quote for a patio","Send a closing message"]},
+{id:"leads",icon:"📞",title:"Lead Chaser",sub:"Follow up fast and close more jobs",bg:"linear-gradient(135deg,#0D1A10,#102015)",border:"#2A9D8F22",iconBg:"#2A9D8F18",prompt:"Help me follow up with a lead or close a job. Ask me: how the lead came in, how long ago, what job they want, and what happened last time we talked.",suggestions:["Text a cold lead","Handle price objection","Close a hesitant customer","Follow up after no response"]},
+{id:"social",icon:"📣",title:"Social Content",sub:"Posts for Facebook, Instagram, Nextdoor",bg:"linear-gradient(135deg,#0A0D1A,#0D1020)",border:"#457B9D22",iconBg:"#457B9D18",prompt:"Write social media content for Mitten Made Concrete. Ask me: what platform, what project to feature, any details, and if I have photos to describe.",suggestions:["Facebook post for a driveway","Instagram caption","Nextdoor community post","Before and after post"]},
+{id:"money",icon:"💰",title:"Job Costing",sub:"Price jobs right and protect your margin",bg:"linear-gradient(135deg,#0A1A10,#0C1A12)",border:"#2D6A4F22",iconBg:"#2D6A4F18",prompt:"Help me price or cost out a concrete job. Ask me: job type, size, any rip-out involved, access difficulty, and my market area.",suggestions:["Price a driveway","Calculate markup","Upsell opportunities","Am I charging enough"]},
+];
+const TOOLS=[
+{id:"reviews",icon:"⭐",color:"#F59E0B",label:"Review Responses",desc:"Respond to Google reviews and complaints",prompt:"Help me respond to a customer review or complaint. Ask me what they said and what happened on the job."},
+{id:"sales",icon:"🚪",color:"#E76F51",label:"Door Knock Scripts",desc:"Canvass neighborhoods after a job",prompt:"Give me a door knock script for canvassing after a concrete job. Ask me what job I just finished and what area I am in."},
+{id:"ops",icon:"⚙️",color:"#6A4C93",label:"Operations",desc:"Scheduling, crew, job site efficiency",prompt:"Give me operational advice for my concrete business. Ask me what challenge I am dealing with."},
+{id:"legal",icon:"📄",color:"#1D3557",label:"Contracts",desc:"Contract language that protects you",prompt:"Help me with contract or change order language. Ask me what situation I need to protect myself from."},
+{id:"intel",icon:"🎯",color:"#C1121F",label:"Beat the Competition",desc:"Win jobs when someone goes cheaper",prompt:"Help me win a job when a customer is considering a cheaper competitor. Ask me about the situation."},
+];
+const QUICK=[
+{label:"Write a Facebook post",mod:"social"},
+{label:"Follow up with a lead",mod:"leads"},
+{label:"Respond to bad review",mod:"reviews"},
+{label:"Price a driveway",mod:"money"},
+{label:"Door knock script",mod:"sales"},
+{label:"Quote follow-up text",mod:"quote"},
+];
+let currentMod=null,history=[],isLoading=false,currentSugs=[];
+const dg=document.getElementById('dailyGrid');
+DAILY.forEach((d,i)=>{const c=document.createElement('div');c.className='daily-card';c.style.cssText=`background:${d.bg};border-color:${d.border};animation:slideUp .4s ease both;animation-delay:${i*.07}s`;c.innerHTML=`<span class="dc-icon">${d.icon}</span><div class="dc-title">${d.title}</div><div class="dc-sub">${d.sub}</div><div class="dc-arrow">→</div>`;c.onclick=()=>openChat(d,d.prompt);dg.appendChild(c);});
+const ce=document.getElementById('chipsEl');
+QUICK.forEach(q=>{const b=document.createElement('button');b.className='chip';b.textContent=q.label;const mod=[...DAILY,...TOOLS].find(m=>m.id===q.mod);b.onclick=()=>openChat(mod,q.label+'. Help me with this for Mitten Made Concrete.');ce.appendChild(b);});
+const tl=document.getElementById('toolsList');
+TOOLS.forEach((t,i)=>{const r=document.createElement('div');r.className='tool-row';r.style.cssText=`animation:slideUp .4s ease both;animation-delay:${(i+4)*.06}s`;r.innerHTML=`<div class="tool-icon" style="background:${t.color}14;border:1px solid ${t.color}22">${t.icon}</div><div class="tool-info"><div class="tool-name">${t.label}</div><div class="tool-desc">${t.desc}</div></div><div class="tool-arrow">›</div>`;r.onclick=()=>openChat(t,t.prompt);tl.appendChild(r);});
+function openChat(mod,userPrompt){currentMod=mod;history=[];currentSugs=mod.suggestions||[];document.getElementById('home').classList.remove('active');document.getElementById('chat').classList.add('active');const icon=document.getElementById('chatIcon');icon.textContent=mod.icon;icon.style.background=mod.iconBg||`${mod.color}14`||'#F4A26114';icon.style.border=`1px solid ${mod.border||mod.color+'22'||'#F4A26122'}`;document.getElementById('chatTitle').textContent=mod.title||mod.label;document.getElementById('messages').innerHTML='';document.getElementById('msgInput').value='';document.getElementById('suggestions').innerHTML='';updateSend();runAI(userPrompt,true);}
+function goHome(){document.getElementById('chat').classList.remove('active');document.getElementById('home').classList.add('active');currentMod=null;history=[];isLoading=false;}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function updateSend(){const v=document.getElementById('msgInput').value.trim();document.getElementById('sendBtn').disabled=isLoading||!v;}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function send(){const input=document.getElementById('msgInput');const text=input.value.trim();if(!text||isLoading)return;input.value='';input.style.height='auto';updateSend();document.getElementById('suggestions').innerHTML='';appendUser(text);runAI(text,false);}
+function appendUser(text){const msgs=document.getElementById('messages');const row=document.createElement('div');row.className='msg-user';row.innerHTML=`<div class="bubble-user">${esc(text)}</div>`;msgs.appendChild(row);msgs.scrollTop=msgs.scrollHeight;history.push({role:'user',content:text});}
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+async function runAI(userText,hidden){isLoading=true;updateSend();if(hidden){history.push({role:'user',content:userText});}
+const msgs=document.getElementById('messages');const row=document.createElement('div');row.className='msg-ai';const av=document.createElement('div');av.className='avatar';av.textContent=currentMod.icon;av.style.background=currentMod.iconBg||`${currentMod.color}14`||'#F4A26114';av.style.border=`1px solid ${currentMod.border||(currentMod.color+'22')||'#F4A26122'}`;const bubble=document.createElement('div');bubble.className='bubble-ai';bubble.innerHTML='<span class="cursor"></span>';row.appendChild(av);row.appendChild(bubble);msgs.appendChild(row);msgs.scrollTop=msgs.scrollHeight;
+let fullText='';
+try{const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM,messages:history,stream:true})});const reader=resp.body.getReader();const dec=new TextDecoder();while(true){const{done,value}=await reader.read();if(done)break;for(const line of dec.decode(value).split('\n')){if(line.startsWith('data: ')){try{const d=JSON.parse(line.slice(6));if(d.type==='content_block_delta'&&d.delta?.text){fullText+=d.delta.text;bubble.innerHTML=esc(fullText)+'<span class="cursor"></span>';msgs.scrollTop=msgs.scrollHeight;}}catch{}}}}}catch(e){fullText='Something went wrong. Try again.';}
+bubble.innerHTML=esc(fullText);history.push({role:'assistant',content:fullText});isLoading=false;updateSend();
+if(currentSugs.length){const sugsEl=document.getElementById('suggestions');sugsEl.innerHTML='';currentSugs.forEach(s=>{const btn=document.createElement('button');btn.className='sug';btn.textContent=s;btn.onclick=()=>{document.getElementById('msgInput').value=s;autoResize(document.getElementById('msgInput'));updateSend();send();};sugsEl.appendChild(btn);});}
+setTimeout(()=>document.getElementById('msgInput').focus(),100);}
+function copyLast(){const last=[...history].reverse().find(m=>m.role==='assistant');if(last){navigator.clipboard.writeText(last.content).then(()=>showToast('✓ Copied to clipboard'));}}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+</script>
+</body>
+</html>
